@@ -10,8 +10,8 @@ Compares two configuration files and shows a difference.
 
 ## Usage
 
-```gendiff -h```
+```gendiff <firstConfig.json> <secondConfig.json>```
 
 ## Demo
-[View](https://asciinema.org/a/CAq9yBGkhTcCtzibVZMoGtBFq)
+[View](https://asciinema.org/a/O0EmEJA6TpJylkfLK8qQHvekL)
 
