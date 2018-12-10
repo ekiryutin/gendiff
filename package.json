@@ -1,0 +1,38 @@
+{
+  "name": "gendiff-kir",
+  "version": "1.0.0",
+  "description": "Generate Difference",
+  "bin": {
+    "gendiff": "dist/bin/gendiff.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "kiryutin",
+  "keywords": [
+    "hexlet",
+    "gendiff"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.5",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-babel": "^5.2.1",
+    "eslint-plugin-import": "^2.14.0",
+    "install": "^0.12.2",
+    "npm": "^6.4.1"
+  },
+  "dependencies": {
+    "commander": "^2.19.0"
+  }
+}
