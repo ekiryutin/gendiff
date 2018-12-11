@@ -13,5 +13,5 @@ Compares two configuration files and shows a difference.
 ```gendiff <firstConfig.json> <secondConfig.json>```
 
 ## Demo
-[View](https://asciinema.org/a/O0EmEJA6TpJylkfLK8qQHvekL)
+[View](https://asciinema.org/a/tB6xP19l5IjKpaAvkGvlmBJ48)
 
