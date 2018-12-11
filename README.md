@@ -1,6 +1,4 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/a07744d406ed9284e196/maintainability)](https://codeclimate.com/github/ekiryutin/project-lvl2-s381/maintainability)
-
-[![Build Status](https://travis-ci.org/ekiryutin/project-lvl2-s381.svg?branch=master)](https://travis-ci.org/ekiryutin/project-lvl2-s381)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a07744d406ed9284e196/maintainability)](https://codeclimate.com/github/ekiryutin/project-lvl2-s381/maintainability) [![Build Status](https://travis-ci.org/ekiryutin/project-lvl2-s381.svg?branch=master)](https://travis-ci.org/ekiryutin/project-lvl2-s381)
 
 # Gendiff
 Compares two configuration files and shows a difference.
@@ -10,8 +8,8 @@ Compares two configuration files and shows a difference.
 
 ## Usage
 
-```gendiff <firstConfig.json> <secondConfig.json>```
+```gendiff <firstConfig> <secondConfig>```
 
 ## Demo
-[View](https://asciinema.org/a/tB6xP19l5IjKpaAvkGvlmBJ48)
+[View](https://asciinema.org/a/u6YsJao40wDlG4L2UgHuoyErY)
 
