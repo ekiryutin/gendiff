@@ -3,7 +3,7 @@ import genDiff from '../src';
 
 const dir = '__tests__/__fixtures__';
 
-const expectedPlain = fs.readFileSync(`${dir}/expected_plain.txt`).toString();
+// const expectedPlain = fs.readFileSync(`${dir}/expected_plain.txt`).toString();
 const expectedTree = fs.readFileSync(`${dir}/expected_tree.txt`).toString();
 
 const getActual = (firstFile, secondFile) => genDiff(`${dir}/${firstFile}`, `${dir}/${secondFile}`);
@@ -20,7 +20,7 @@ test('Difference between .yml files', () => {
 
 test('Difference between .ini files', () => {
   const actual = getActual('before.ini', 'after.ini');
-  expect(actual).toBe(expectedPlain);
+  expect(actual).toBe(expectedTree);
 });
 
 test('Difference between .json and .yml files', () => {
