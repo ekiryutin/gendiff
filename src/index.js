@@ -9,26 +9,23 @@ const compareObject = (firstData, secondData) => {
   const keys = ld.union(ld.keys(firstData), ld.keys(secondData)).sort();
 
   const compareAttribute = (key) => {
-    const hasFirst = ld.has(firstData, key);
-    const hasSecond = ld.has(secondData, key);
     const firstValue = firstData[key];
     const secondValue = secondData[key];
 
     const getValue = obj => (isObject(obj) ? compareObject(obj, obj) : obj);
 
-    if (hasFirst && !hasSecond) {
+    if (ld.has(firstData, key) && !ld.has(secondData, key)) {
       return { key, type: 'removed', value: getValue(firstValue) };
     }
-    if (!hasFirst && hasSecond) {
+    if (!ld.has(firstData, key) && ld.has(secondData, key)) {
       return { key, type: 'added', value: getValue(secondValue) };
     }
-    if (isObject(firstValue) && isObject(secondValue)) { // уточнить
+    if (isObject(firstValue) && isObject(secondValue)) {
       return { key, type: 'equal', value: compareObject(firstValue, secondValue) };
     }
     if (firstValue === secondValue) {
       return { key, type: 'equal', value: firstValue };
     }
-    // 'changed'
     return [
       { key, type: 'removed', value: getValue(firstValue) },
       { key, type: 'added', value: getValue(secondValue) },
@@ -42,12 +39,7 @@ const formatAttributes = (list, level) => {
   const indent = (' ').repeat(level * 4 - 2);
 
   const formatAttribute = (item) => {
-    const formatValue = (value) => {
-      if (isObject(value)) {
-        return `{\n${formatAttributes(value.list, level + 1)}\n${indent}  }`;
-      }
-      return value;
-    };
+    const formatValue = value => (isObject(value) ? `{\n${formatAttributes(value.list, level + 1)}\n${indent}  }` : value);
     const value = formatValue(item.value);
 
     switch (item.type) {
