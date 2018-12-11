@@ -1,18 +1,12 @@
+import fs from 'fs';
 import genDiff from '../src';
-
-const expected = `{
-    host: hexlet.io
-  + timeout: 20
-  - timeout: 50
-  - proxy: 123.234.53.22
-  - follow: false
-  + verbose: true
-}`;
 
 // Нужна проверка (?) того, что "Порядок вывода не важен,
 // главное чтобы в случае изменения значения одного ключа, обе строчки находились рядом.
 
 const dir = '__tests__/__fixtures__';
+
+const expected = fs.readFileSync(`${dir}/expected.txt`).toString();
 
 const getActual = (firstFile, secondFile) => genDiff(`${dir}/${firstFile}`, `${dir}/${secondFile}`);
 

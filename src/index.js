@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import ld from 'lodash';
-import parsers from './parsers';
+import getParser from './parsers';
 
 const compare = (firstData, secondData) => {
   // const keys = [...Object.keys(firstData), ...Object.keys(secondData)]; // union all
@@ -12,10 +12,10 @@ const compare = (firstData, secondData) => {
     const secondValue = secondData[key];
     const getType = () => {
       if (ld.has(firstData, key) && !ld.has(secondData, key)) {
-        return 'first';
+        return 'removed';
       }
       if (!ld.has(firstData, key) && ld.has(secondData, key)) {
-        return 'second';
+        return 'added';
       }
       return firstValue === secondValue ? 'equal' : 'different';
     };
@@ -29,10 +29,11 @@ const compare = (firstData, secondData) => {
 const formatOutput = (diff) => {
   const formatAttribute = (item) => {
     switch (item.type) {
-      case 'first': return `  - ${item.key}: ${item.firstValue}`;
-      case 'second': return `  + ${item.key}: ${item.secondValue}`;
+      case 'removed': return `  - ${item.key}: ${item.firstValue}`;
+      case 'added': return `  + ${item.key}: ${item.secondValue}`;
       case 'equal': return `    ${item.key}: ${item.firstValue}`;
-      default: return `  + ${item.key}: ${item.secondValue}\n  - ${item.key}: ${item.firstValue}`;
+      case 'different': return `  + ${item.key}: ${item.secondValue}\n  - ${item.key}: ${item.firstValue}`;
+      default: return '';
     }
   };
   return ['{', ...diff.map(formatAttribute), '}'].join('\n');
@@ -40,7 +41,8 @@ const formatOutput = (diff) => {
 
 const loadFile = (filePath) => {
   const ext = path.extname(filePath);
-  return parsers[ext](fs.readFileSync(filePath).toString());
+  const parser = getParser(ext);
+  return parser(fs.readFileSync(filePath).toString());
 };
 
 export default (firstFilePath, secondFilePath) => {
