@@ -14,26 +14,24 @@ const expected = `{
 
 const dir = '__tests__/__fixtures__';
 
-test('Difference between .json files', () => {
-  const firstFile = `${dir}/before.json`;
-  const secondFile = `${dir}/after.json`;
+const getActual = (firstFile, secondFile) => genDiff(`${dir}/${firstFile}`, `${dir}/${secondFile}`);
 
-  const actual = genDiff(firstFile, secondFile);
+test('Difference between .json files', () => {
+  const actual = getActual('before.json', 'after.json');
   expect(actual).toBe(expected);
 });
 
 test('Difference between .yml files', () => {
-  const firstFile = `${dir}/before.yml`;
-  const secondFile = `${dir}/after.yml`;
+  const actual = getActual('before.yml', 'after.yml');
+  expect(actual).toBe(expected);
+});
 
-  const actual = genDiff(firstFile, secondFile);
+test('Difference between .ini files', () => {
+  const actual = getActual('before.ini', 'after.ini');
   expect(actual).toBe(expected);
 });
 
 test('Difference between .json and .yml files', () => {
-  const firstFile = `${dir}/before.json`;
-  const secondFile = `${dir}/after.yml`;
-
-  const actual = genDiff(firstFile, secondFile);
+  const actual = getActual('before.json', 'after.yml');
   expect(actual).toBe(expected);
 });

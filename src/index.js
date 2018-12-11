@@ -40,7 +40,7 @@ const formatOutput = (diff) => {
 
 const loadFile = (filePath) => {
   const ext = path.extname(filePath);
-  return parsers[ext](fs.readFileSync(filePath));
+  return parsers[ext](fs.readFileSync(filePath).toString());
 };
 
 export default (firstFilePath, secondFilePath) => {
