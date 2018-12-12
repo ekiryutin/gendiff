@@ -1,11 +1,10 @@
+import compare from './compare';
 import Node from './Node';
 
 export default class ObjectNode extends Node {
-  constructor(name, type, children = []) {
-    super(name, type);
-    this.children = children;
-
-    this.children.forEach(child => child.setParent(this));
+  constructor(name, type, data, parent) {
+    super(name, type, parent);
+    this.children = compare(data, this);
   }
 
   showChildren() {

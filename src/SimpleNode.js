@@ -1,9 +1,9 @@
 import Node from './Node';
 
 export default class SingleNode extends Node {
-  constructor(name, type, value) {
-    super(name, type);
-    this.value = value;
+  constructor(name, type, data, parent) {
+    super(name, type, parent);
+    this.value = data;
   }
 
   toString() {

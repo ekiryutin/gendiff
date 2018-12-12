@@ -1,20 +1,12 @@
 export default class Node {
-  constructor(name, type) {
+  constructor(name, type, parent = null) {
     this.name = name;
     this.type = type;
-    this.parent = null;
-    this.level = null;
-  }
-
-  setParent(parent) {
     this.parent = parent;
   }
 
   getLevel() {
-    if (this.level === null) {
-      this.level = this.parent === null ? 0 : this.parent.getLevel() + 1;
-    }
-    return this.level;
+    return this.parent === null ? 0 : this.parent.getLevel() + 1;
   }
 
   getIndent() {
