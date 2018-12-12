@@ -9,27 +9,36 @@ const compareObject = (firstData, secondData) => {
   const keys = ld.union(ld.keys(firstData), ld.keys(secondData)).sort();
 
   const compareAttribute = (key) => {
-    const firstValue = firstData[key];
-    const secondValue = secondData[key];
-
     const getValue = obj => (isObject(obj) ? compareObject(obj, obj) : obj);
 
-    if (ld.has(firstData, key) && !ld.has(secondData, key)) {
-      return { key, type: 'removed', value: getValue(firstValue) };
-    }
-    if (!ld.has(firstData, key) && ld.has(secondData, key)) {
-      return { key, type: 'added', value: getValue(secondValue) };
-    }
-    if (isObject(firstValue) && isObject(secondValue)) {
-      return { key, type: 'equal', value: compareObject(firstValue, secondValue) };
-    }
-    if (firstValue === secondValue) {
-      return { key, type: 'equal', value: firstValue };
-    }
-    return [
-      { key, type: 'removed', value: getValue(firstValue) },
-      { key, type: 'added', value: getValue(secondValue) },
+    const mapper = [
+      {
+        check: () => ld.has(firstData, key) && !ld.has(secondData, key),
+        make: () => ({ key, type: 'removed', value: getValue(firstData[key]) }),
+      },
+      {
+        check: () => !ld.has(firstData, key) && ld.has(secondData, key),
+        make: () => ({ key, type: 'added', value: getValue(secondData[key]) }),
+      },
+      {
+        check: () => isObject(firstData[key]) && isObject(secondData[key]),
+        make: () => ({ key, type: 'equal', value: compareObject(firstData[key], secondData[key]) }),
+      },
+      {
+        check: () => firstData[key] === secondData[key],
+        make: () => ({ key, type: 'equal', value: firstData[key] }),
+      },
+      {
+        check: () => firstData[key] !== secondData[key],
+        make: () => ([
+          { key, type: 'removed', value: getValue(firstData[key]) },
+          { key, type: 'added', value: getValue(secondData[key]) },
+        ]),
+      },
     ];
+
+    const { make } = mapper.find(({ check }) => check(firstData, secondData, key));
+    return make(firstData, secondData, key);
   };
   const list = ld.flatten(keys.map(compareAttribute));
   return { list };
