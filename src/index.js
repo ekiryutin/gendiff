@@ -3,42 +3,40 @@ import fs from 'fs';
 import ld from 'lodash';
 import getParser from './parsers';
 
-const isObject = obj => typeof obj === 'object';
+const compareRules = [
+  {
+    check: (first, second, key) => ld.has(first, key) && !ld.has(second, key),
+    make: (first, second, key, { getValue }) => ({ key, type: 'removed', value: getValue(first[key]) }),
+  },
+  {
+    check: (first, second, key) => !ld.has(first, key) && ld.has(second, key),
+    make: (first, second, key, { getValue }) => ({ key, type: 'added', value: getValue(second[key]) }),
+  },
+  {
+    check: (first, second, key) => ld.isObject(first[key]) && ld.isObject(second[key]),
+    make: (first, second, key, { compareObject }) => ({ key, type: 'equal', value: compareObject(first[key], second[key]) }),
+  },
+  {
+    check: (first, second, key) => first[key] === second[key],
+    make: (first, second, key) => ({ key, type: 'equal', value: first[key] }),
+  },
+  {
+    check: (first, second, key) => first[key] !== second[key],
+    make: (first, second, key, { getValue }) => ([
+      { key, type: 'removed', value: getValue(first[key]) },
+      { key, type: 'added', value: getValue(second[key]) },
+    ]),
+  },
+];
 
 const compareObject = (firstData, secondData) => {
   const keys = ld.union(ld.keys(firstData), ld.keys(secondData)).sort();
 
   const compareAttribute = (key) => {
-    const getValue = obj => (isObject(obj) ? compareObject(obj, obj) : obj);
+    const getValue = obj => (ld.isObject(obj) ? compareObject(obj, obj) : obj);
 
-    const mapper = [
-      {
-        check: () => ld.has(firstData, key) && !ld.has(secondData, key),
-        make: () => ({ key, type: 'removed', value: getValue(firstData[key]) }),
-      },
-      {
-        check: () => !ld.has(firstData, key) && ld.has(secondData, key),
-        make: () => ({ key, type: 'added', value: getValue(secondData[key]) }),
-      },
-      {
-        check: () => isObject(firstData[key]) && isObject(secondData[key]),
-        make: () => ({ key, type: 'equal', value: compareObject(firstData[key], secondData[key]) }),
-      },
-      {
-        check: () => firstData[key] === secondData[key],
-        make: () => ({ key, type: 'equal', value: firstData[key] }),
-      },
-      {
-        check: () => firstData[key] !== secondData[key],
-        make: () => ([
-          { key, type: 'removed', value: getValue(firstData[key]) },
-          { key, type: 'added', value: getValue(secondData[key]) },
-        ]),
-      },
-    ];
-
-    const { make } = mapper.find(({ check }) => check(firstData, secondData, key));
-    return make(firstData, secondData, key);
+    const { make } = compareRules.find(({ check }) => check(firstData, secondData, key));
+    return make(firstData, secondData, key, { getValue, compareObject });
   };
   const list = ld.flatten(keys.map(compareAttribute));
   return { list };
@@ -48,8 +46,7 @@ const formatAttributes = (list, level) => {
   const indent = (' ').repeat(level * 4 - 2);
 
   const formatAttribute = (item) => {
-    const formatValue = value => (isObject(value) ? `{\n${formatAttributes(value.list, level + 1)}\n${indent}  }` : value);
-    const value = formatValue(item.value);
+    const value = (ld.isObject(item.value) ? `{\n${formatAttributes(item.value.list, level + 1)}\n${indent}  }` : item.value);
 
     switch (item.type) {
       case 'removed': return `${indent}- ${item.key}: ${value}`;
