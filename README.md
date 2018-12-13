@@ -17,5 +17,5 @@ Options:
 ```
 
 ## Demo
-[View](https://asciinema.org/a/gfYKmYtXMHDkMICNjkldjnPne)
+[View](https://asciinema.org/a/QTQuyhOQmf72OsHfe6L1Rzcsr)
 
