@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import getParser from './parsers';
 import buildAst from './buildAst';
+import render from './render';
 
 const loadData = (filePath) => {
   const ext = path.extname(filePath);
@@ -9,10 +10,10 @@ const loadData = (filePath) => {
   return parseData(fs.readFileSync(filePath).toString());
 };
 
-export default (firstFilePath, secondFilePath) => {
+export default (firstFilePath, secondFilePath, format = 'json') => {
   const firstData = loadData(firstFilePath);
   const secondData = loadData(secondFilePath);
 
   const ast = buildAst(firstData, secondData);
-  return ast.toString();
+  return render(ast, format);
 };

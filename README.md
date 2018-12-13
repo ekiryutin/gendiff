@@ -8,8 +8,13 @@ Compares two configuration files and shows a difference.
 
 ## Usage
 
-```gendiff <firstConfig> <secondConfig>```
+```gendiff [options] <firstConfig> <secondConfig>
+
+Options:
+  -f, --format [type]  output format (json, plain)
+  -h, --help           output usage information
+```
 
 ## Demo
-[View](https://asciinema.org/a/u6YsJao40wDlG4L2UgHuoyErY)
+[View](https://asciinema.org/a/8buCkYlgAwm47bIclznyBrOI1)
 
