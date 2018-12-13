@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import getParser from './parsers';
-import buildNode from './buildNode';
+import buildAst from './ast';
 
 const loadFile = (filePath) => {
   const ext = path.extname(filePath);
@@ -14,6 +14,6 @@ export default (firstFilePath, secondFilePath) => {
     first: loadFile(firstFilePath),
     second: loadFile(secondFilePath),
   };
-  const ast = buildNode('', '', data);
+  const ast = buildAst(data);
   return ast.toString(); // render
 };

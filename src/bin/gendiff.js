@@ -12,7 +12,7 @@ program
   .option('-f, --format [type]', 'output format')
   .arguments('<firstConfig> <secondConfig>')
   .action((firstConfig, secondConfig) => {
-    const result = genDiff(getFullPath(firstConfig), getFullPath(secondConfig));
+    const result = genDiff(getFullPath(firstConfig), getFullPath(secondConfig), program.format);
     console.log(result);
   })
   .parse(process.argv);
