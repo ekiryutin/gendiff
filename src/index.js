@@ -1,19 +1,18 @@
 import path from 'path';
 import fs from 'fs';
 import getParser from './parsers';
-import buildAst from './ast';
+import buildAst from './buildAst';
 
-const loadFile = (filePath) => {
+const loadData = (filePath) => {
   const ext = path.extname(filePath);
-  const parser = getParser(ext);
-  return parser(fs.readFileSync(filePath).toString());
+  const parseData = getParser(ext);
+  return parseData(fs.readFileSync(filePath).toString());
 };
 
 export default (firstFilePath, secondFilePath) => {
-  const data = {
-    first: loadFile(firstFilePath),
-    second: loadFile(secondFilePath),
-  };
-  const ast = buildAst(data);
-  return ast.toString(); // render
+  const firstData = loadData(firstFilePath);
+  const secondData = loadData(secondFilePath);
+
+  const ast = buildAst(firstData, secondData);
+  return ast.toString();
 };

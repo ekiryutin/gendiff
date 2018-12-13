@@ -7,4 +7,10 @@ const parsers = {
   '.ini': ini.parse,
 };
 
-export default ext => parsers[ext];
+export default (ext) => {
+  const parser = parsers[ext];
+  if (!parser) {
+    throw new Error(('Unsupported extension'));
+  }
+  return parser;
+};
