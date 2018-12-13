@@ -27,6 +27,11 @@ const findType = [
   },
 ];
 
+const getType = (firstValue, secondValue) => {
+  const { type } = findType.find(({ check }) => check(firstValue, secondValue));
+  return type;
+};
+
 const formatValue = (value, indent) => {
   if (_.isObject(value)) {
     const nextIndent = (' ').repeat(indentStep);
@@ -37,11 +42,6 @@ const formatValue = (value, indent) => {
     return ['{', ...formatObject(), `${indent}  }`].join('\n');
   }
   return value;
-};
-
-const getType = (firstValue, secondValue) => {
-  const { type } = findType.find(({ check }) => check(firstValue, secondValue));
-  return type;
 };
 
 const makeRootNode = () => ({
@@ -55,7 +55,7 @@ const makeRootNode = () => ({
   showChildren() { return this.children.join('\n'); },
 
   toString() {
-    return `{\n${this.showChildren()}\n}\n`;
+    return `{\n${this.showChildren()}\n}`;
   },
 });
 
