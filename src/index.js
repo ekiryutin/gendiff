@@ -10,7 +10,7 @@ const loadData = (filePath) => {
   return parseData(fs.readFileSync(filePath).toString());
 };
 
-export default (firstFilePath, secondFilePath, format = 'json') => {
+export default (firstFilePath, secondFilePath, format = 'tree') => {
   const firstData = loadData(firstFilePath);
   const secondData = loadData(secondFilePath);
 

@@ -1,1 +1,1 @@
-export default ast => ast.toString();
+export default JSON.stringify;

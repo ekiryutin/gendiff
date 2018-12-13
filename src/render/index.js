@@ -1,8 +1,10 @@
+import renderTree from './renderTree';
 import renderJson from './renderJson';
 import renderPlain from './renderPlain';
 
 const renders = {
   json: renderJson,
+  tree: renderTree,
   plain: renderPlain,
 };
 
