@@ -7,23 +7,25 @@ const formatValue = (value) => {
   return typeof value === 'string' ? `'${value}'` : value;
 };
 
-const renderNode = (node) => {
+const renderNode = (node, parentName = '') => {
+  const getFullName = () => (parentName.length === 0 ? node.name : `${parentName}.${node.name}`);
+
   const renderSimpleNode = () => {
-    const name = node.getFullName();
+    const name = getFullName(node);
     switch (node.type) {
       case 'removed': return `Property '${name}' was removed`;
-      case 'added': return `Property '${name}' was added with value: ${formatValue(node.getValue())}`;
-      case 'updated': return `Property '${name}' was updated. From ${formatValue(node.getOldValue())} to ${formatValue(node.getValue())}`;
+      case 'added': return `Property '${name}' was added with value: ${formatValue(node.value)}`;
+      case 'updated': return `Property '${name}' was updated. From ${formatValue(node.oldValue)} to ${formatValue(node.value)}`;
       default: return '';
     }
   };
-  if (node.hasChildren()) {
-    return [renderSimpleNode(), ...node.children.map(renderNode)];
+  if (node.children) {
+    return [renderSimpleNode(), ...node.children.map(nod => renderNode(nod, getFullName()))];
   }
   return renderSimpleNode();
 };
 
 export default (ast) => {
-  const output = _.flattenDeep(ast.children.map(renderNode));
+  const output = _.flattenDeep(ast.children.map(node => renderNode(node)));
   return output.filter(item => item !== '').join('\n');
 };
