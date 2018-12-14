@@ -7,46 +7,24 @@ const loadExpected = filename => fs.readFileSync(`${dir}/${filename}`).toString(
 
 const tests = [
   {
-    description: 'Compare .json files -> tree',
-    firstFile: 'before.json',
-    secondFile: 'after.json',
-    expectedFile: 'expected_tree.txt',
+    extension: 'json', format: 'tree',
   },
   {
-    description: 'Compare .yml files -> tree',
-    firstFile: 'before.yml',
-    secondFile: 'after.yml',
-    expectedFile: 'expected_tree.txt',
+    extension: 'yml', format: 'tree',
   },
   {
-    description: 'Compare .ini files -> tree',
-    firstFile: 'before.yml',
-    secondFile: 'after.yml',
-    expectedFile: 'expected_tree.txt',
+    extension: 'ini', format: 'tree',
   },
   {
-    description: 'Compare .json files -> plain',
-    firstFile: 'before.json',
-    secondFile: 'after.json',
-    expectedFile: 'expected_plain.txt',
-    format: 'plain',
+    extension: 'json', format: 'plain',
   },
 ];
 
 
 tests.forEach((t) => {
-  test(t.description, () => {
-    const actual = genDiff(`${dir}/${t.firstFile}`, `${dir}/${t.secondFile}`, t.format);
-    const expected = loadExpected(t.expectedFile);
+  test(`Compare .${t.extension} files -> ${t.format}`, () => {
+    const actual = genDiff(`${dir}/before.${t.extension}`, `${dir}/after.${t.extension}`, t.format);
+    const expected = loadExpected(`expected_${t.format}.txt`);
     expect(actual).toBe(expected);
   });
 });
-
-/*
-// test json ?
-test('Difference between .json and .yml files', () => {
-  const actual = getActual('before.json', 'after.yml');
-  const expected = loadExpected('expected_tree.txt');
-  expect(actual).toBe(expected);
-});
-*/
