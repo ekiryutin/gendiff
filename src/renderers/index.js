@@ -11,7 +11,7 @@ const renders = {
 export default (ast, format) => {
   const render = renders[format];
   if (!render) {
-    throw new Error('Unsupported format');
+    throw new Error(`Unsupported format '${format}'`);
   }
   return render(ast);
 };

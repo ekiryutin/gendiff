@@ -3,15 +3,14 @@ import _ from 'lodash';
 const indentStep = 4;
 
 const formatValue = (value, indent) => {
-  if (_.isObject(value)) {
-    const nextIndent = (' ').repeat(indentStep);
-    const formatObject = () => {
-      const keys = _.keys(value).sort();
-      return keys.map(key => `${indent}${nextIndent}  ${key}: ${value[key]}`);
-    };
-    return ['{', ...formatObject(), `${indent}  }`].join('\n');
-  }
-  return value;
+  if (!_.isObject(value)) return value;
+
+  const nextIndent = (' ').repeat(indentStep);
+  const formatObject = () => {
+    const keys = _.keys(value).sort();
+    return keys.map(key => `${indent}${nextIndent}  ${key}: ${value[key]}`);
+  };
+  return ['{', ...formatObject(), `${indent}  }`].join('\n');
 };
 
 const renderNode = (node, level) => {
@@ -20,14 +19,15 @@ const renderNode = (node, level) => {
   const renderSimpleNode = () => {
     switch (node.type) {
       case 'added':
-        return `${indent}+ ${node.name}: ${formatValue(node.value, indent)}`;
+        return `${indent}+ ${node.name}: ${formatValue(node.newValue, indent)}`;
       case 'removed':
         return `${indent}- ${node.name}: ${formatValue(node.oldValue, indent)}`;
       case 'updated':
         return [
           `${indent}- ${node.name}: ${formatValue(node.oldValue, indent)}`,
-          `${indent}+ ${node.name}: ${formatValue(node.value, indent)}`];
-      default: return `${indent}  ${node.name}: ${node.value}`;
+          `${indent}+ ${node.name}: ${formatValue(node.newValue, indent)}`];
+      case 'equal': return `${indent}  ${node.name}: ${node.newValue}`;
+      default: throw new Error(`Invalid type '${node.type}'`);
     }
   };
 
@@ -36,7 +36,8 @@ const renderNode = (node, level) => {
       switch (node.type) {
         case 'added': return `${indent}+ `;
         case 'removed': return `${indent}- `;
-        default: return `${indent}  `;
+        case 'equal': return `${indent}  `;
+        default: throw new Error(`Invalid type '${node.type}'`);
       }
     };
     const childrenRender = node.children.map(nod => renderNode(nod, level + 1));

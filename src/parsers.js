@@ -10,7 +10,7 @@ const parsers = {
 export default (ext) => {
   const parser = parsers[ext];
   if (!parser) {
-    throw new Error(('Unsupported extension'));
+    throw new Error((`Unsupported extension '${ext}'`));
   }
   return parser;
 };

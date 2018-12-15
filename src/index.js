@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import getParser from './parsers';
 import buildAst from './buildAst';
-import render from './render';
+import render from './renderers';
 
 const loadData = (filePath) => {
   const ext = path.extname(filePath);

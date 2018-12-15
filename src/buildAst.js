@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const hasValue = value => value === undefined;
+const hasValue = value => value === null;
 
 const findType = [
   {
@@ -30,14 +30,9 @@ const getType = (firstValue, secondValue) => {
   return type;
 };
 
-const makeBaseNode = (firstData, secondData, key) => ({
-  name: key,
-  type: getType(firstData[key], secondData[key]),
-  value: secondData[key],
-  oldValue: firstData[key],
-});
+const buildNode = (firstData, secondData, key = null) => {
+  const isRootNode = () => key === null;
 
-const buildNode = (firstData, secondData, key, root = false) => {
   const buildChildren = (first, second) => {
     if (_.isObject(first) && _.isObject(second)) {
       const keys = _.union(_.keys(first), _.keys(second)).sort();
@@ -46,13 +41,17 @@ const buildNode = (firstData, secondData, key, root = false) => {
     return null;
   };
 
-  if (root) {
-    return { children: buildChildren(firstData, secondData) };
-  }
+  const firstValue = _.has(firstData, key) ? firstData[key] : null;
+  const secondValue = _.has(secondData, key) ? secondData[key] : null;
+  const type = getType(firstValue, secondValue);
+  const children = isRootNode()
+    ? buildChildren(firstData, secondData)
+    : buildChildren(firstValue, secondValue);
 
-  const node = makeBaseNode(firstData, secondData, key);
-  const children = buildChildren(firstData[key], secondData[key], node);
+  const node = {
+    name: key, type, newValue: secondValue, oldValue: firstValue,
+  };
   return children ? { ...node, children } : node;
 };
 
-export default (firstData, secondData) => buildNode(firstData, secondData, '', true);
+export default (firstData, secondData) => buildNode(firstData, secondData);

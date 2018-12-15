@@ -14,8 +14,8 @@ const renderNode = (node, parentName = '') => {
     const name = getFullName(node);
     switch (node.type) {
       case 'removed': return `Property '${name}' was removed`;
-      case 'added': return `Property '${name}' was added with value: ${formatValue(node.value)}`;
-      case 'updated': return `Property '${name}' was updated. From ${formatValue(node.oldValue)} to ${formatValue(node.value)}`;
+      case 'added': return `Property '${name}' was added with value: ${formatValue(node.newValue)}`;
+      case 'updated': return `Property '${name}' was updated. From ${formatValue(node.oldValue)} to ${formatValue(node.newValue)}`;
       default: return '';
     }
   };
