@@ -19,7 +19,7 @@ const keyDispatcher = [
   },
   {
     check: (first, second, key) => first[key] === second[key],
-    make: (first, second, key) => ({ type: 'equal', newValue: second[key], oldValue: first[key] }),
+    make: (first, second, key) => ({ type: 'equal', newValue: second[key] }),
   },
   {
     check: (first, second, key) => first[key] !== second[key],
