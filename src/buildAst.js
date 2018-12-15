@@ -1,57 +1,40 @@
 import _ from 'lodash';
 
-const hasValue = value => value === null;
-
-const findType = [
+const keyDispatcher = [
   {
-    check: (first, second) => hasValue(first) && !hasValue(second),
-    type: 'added',
+    check: (first, second, key) => !_.has(first, key) && _.has(second, key),
+    make: (first, second, key) => ({ type: 'added', newValue: second[key] }),
   },
   {
-    check: (first, second) => !hasValue(first) && hasValue(second),
-    type: 'removed',
+    check: (first, second, key) => _.has(first, key) && !_.has(second, key),
+    make: (first, second, key) => ({ type: 'removed', oldValue: first[key] }),
   },
   {
-    check: (first, second) => _.isObject(first) && _.isObject(second),
-    type: 'equal',
+    check: (first, second, key) => key === null,
+    make: (first, second, key, fn) => ({ type: 'group', children: fn(first, second) }),
   },
   {
-    check: (first, second) => first === second,
-    type: 'equal',
+    check: (first, second, key) => _.isObject(first[key]) && _.isObject(second[key]),
+    make: (first, second, key, fn) => ({ type: 'group', children: fn(first[key], second[key]) }),
   },
   {
-    check: (first, second) => first !== second,
-    type: 'updated',
+    check: (first, second, key) => first[key] === second[key],
+    make: (first, second, key) => ({ type: 'equal', newValue: second[key], oldValue: first[key] }),
+  },
+  {
+    check: (first, second, key) => first[key] !== second[key],
+    make: (first, second, key) => ({ type: 'updated', newValue: second[key], oldValue: first[key] }),
   },
 ];
 
-const getType = (firstValue, secondValue) => {
-  const { type } = findType.find(({ check }) => check(firstValue, secondValue));
-  return type;
-};
-
 const buildNode = (firstData, secondData, key = null) => {
-  const isRootNode = () => key === null;
-
   const buildChildren = (first, second) => {
-    if (_.isObject(first) && _.isObject(second)) {
-      const keys = _.union(_.keys(first), _.keys(second)).sort();
-      return keys.map(_key => buildNode(first, second, _key));
-    }
-    return null;
+    const keys = _.union(_.keys(first), _.keys(second)).sort();
+    return keys.map(_key => buildNode(first, second, _key));
   };
-
-  const firstValue = _.has(firstData, key) ? firstData[key] : null;
-  const secondValue = _.has(secondData, key) ? secondData[key] : null;
-  const type = getType(firstValue, secondValue);
-  const children = isRootNode()
-    ? buildChildren(firstData, secondData)
-    : buildChildren(firstValue, secondValue);
-
-  const node = {
-    name: key, type, newValue: secondValue, oldValue: firstValue,
-  };
-  return children ? { ...node, children } : node;
+  const { make } = keyDispatcher.find(({ check }) => check(firstData, secondData, key));
+  const node = make(firstData, secondData, key, buildChildren);
+  return { name: key, ...node };
 };
 
 export default (firstData, secondData) => buildNode(firstData, secondData);

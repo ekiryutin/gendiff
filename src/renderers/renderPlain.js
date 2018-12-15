@@ -8,21 +8,15 @@ const formatValue = (value) => {
 };
 
 const renderNode = (node, parentName = '') => {
-  const getFullName = () => (parentName.length === 0 ? node.name : `${parentName}.${node.name}`);
-
-  const renderSimpleNode = () => {
-    const name = getFullName(node);
-    switch (node.type) {
-      case 'removed': return `Property '${name}' was removed`;
-      case 'added': return `Property '${name}' was added with value: ${formatValue(node.newValue)}`;
-      case 'updated': return `Property '${name}' was updated. From ${formatValue(node.oldValue)} to ${formatValue(node.newValue)}`;
-      default: return '';
-    }
-  };
-  if (node.children) {
-    return [renderSimpleNode(), ...node.children.map(nod => renderNode(nod, getFullName()))];
+  const fullName = (parentName.length === 0 ? node.name : `${parentName}.${node.name}`);
+  switch (node.type) {
+    case 'removed': return `Property '${fullName}' was removed`;
+    case 'added': return `Property '${fullName}' was added with value: ${formatValue(node.newValue)}`;
+    case 'updated': return `Property '${fullName}' was updated. From ${formatValue(node.oldValue)} to ${formatValue(node.newValue)}`;
+    case 'equal': return '';
+    case 'group': return node.children.map(nod => renderNode(nod, fullName));
+    default: throw new Error(`Invalid type '${node.type}'`);
   }
-  return renderSimpleNode();
 };
 
 export default (ast) => {

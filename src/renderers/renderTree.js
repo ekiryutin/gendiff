@@ -14,41 +14,27 @@ const formatValue = (value, indent) => {
 };
 
 const renderNode = (node, level) => {
+  const renderChildren = () => node.children.map(nod => renderNode(nod, level + 1));
   const indent = (' ').repeat(level * indentStep - 2);
+  switch (node.type) {
+    case 'added':
+      return `${indent}+ ${node.name}: ${formatValue(node.newValue, indent)}`;
+    case 'removed':
+      return `${indent}- ${node.name}: ${formatValue(node.oldValue, indent)}`;
+    case 'updated':
+      return [
+        `${indent}- ${node.name}: ${formatValue(node.oldValue, indent)}`,
+        `${indent}+ ${node.name}: ${formatValue(node.newValue, indent)}`];
+    case 'equal':
+      return `${indent}  ${node.name}: ${node.newValue}`;
+    case 'group':
+      return [`${indent}  ${node.name}: {`, ...renderChildren(), `${indent}  }`];
 
-  const renderSimpleNode = () => {
-    switch (node.type) {
-      case 'added':
-        return `${indent}+ ${node.name}: ${formatValue(node.newValue, indent)}`;
-      case 'removed':
-        return `${indent}- ${node.name}: ${formatValue(node.oldValue, indent)}`;
-      case 'updated':
-        return [
-          `${indent}- ${node.name}: ${formatValue(node.oldValue, indent)}`,
-          `${indent}+ ${node.name}: ${formatValue(node.newValue, indent)}`];
-      case 'equal': return `${indent}  ${node.name}: ${node.newValue}`;
-      default: throw new Error(`Invalid type '${node.type}'`);
-    }
-  };
-
-  const renderObjectNode = () => {
-    const startOf = () => {
-      switch (node.type) {
-        case 'added': return `${indent}+ `;
-        case 'removed': return `${indent}- `;
-        case 'equal': return `${indent}  `;
-        default: throw new Error(`Invalid type '${node.type}'`);
-      }
-    };
-    const childrenRender = node.children.map(nod => renderNode(nod, level + 1));
-    return [`${startOf()}${node.name}: {`, ...childrenRender, `${indent}  }`];
-  };
-  return node.children ? renderObjectNode() : renderSimpleNode();
+    default: throw new Error(`Invalid type '${node.type}'`);
+  }
 };
 
-const renderRootNode = (node) => {
+export default (node) => {
   const childrenRender = node.children.map(nod => renderNode(nod, 1));
   return _.flattenDeep(['{', ...childrenRender, '}']).join('\n');
 };
-
-export default renderRootNode;

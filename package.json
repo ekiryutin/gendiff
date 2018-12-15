@@ -1,6 +1,6 @@
 {
   "name": "gendiff-kir",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Generate Difference",
   "bin": {
     "gendiff": "dist/bin/gendiff.js"
